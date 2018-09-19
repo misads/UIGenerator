@@ -11,6 +11,8 @@ void Register::addKey(CString item, CString key, CString value){
 
 bool Register::delKey(CString item, CString key){
 	
+
+	return false;
 }
 
 void Register::updateKey(CString item, CString key, CString value){
