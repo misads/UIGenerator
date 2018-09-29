@@ -3,7 +3,8 @@
 
 #include "stdafx.h"
 #include "UIGenerator.h"
-#include"Application.h"
+#include "Application.h"
+#include "Function.h"
 
 #define MAX_LOADSTRING 100
 
@@ -14,6 +15,8 @@ TCHAR szWindowClass[MAX_LOADSTRING];			// 主窗口类名
 
 Application application;
 
+HWND hwndbtn;
+
 // 此代码模块中包含的函数的前向声明: 
 ATOM				MyRegisterClass(HINSTANCE hInstance);
 BOOL				InitInstance(HINSTANCE, int);
@@ -21,14 +24,14 @@ LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
-                     _In_opt_ HINSTANCE hPrevInstance,
-                     _In_ LPTSTR    lpCmdLine,
-                     _In_ int       nCmdShow)
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_ LPTSTR    lpCmdLine,
+	_In_ int       nCmdShow)
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
- 	// TODO:  在此放置代码。
+	// TODO:  在此放置代码。
 	MSG msg;
 	HACCEL hAccelTable;
 
@@ -38,7 +41,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	MyRegisterClass(hInstance);
 
 	// 执行应用程序初始化: 
-	if (!InitInstance (hInstance, nCmdShow))
+	if (!InitInstance(hInstance, nCmdShow))
 	{
 		return FALSE;
 	}
@@ -55,7 +58,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		}
 	}
 
-	return (int) msg.wParam;
+	return (int)msg.wParam;
 }
 
 
@@ -71,17 +74,17 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 
 	wcex.cbSize = sizeof(WNDCLASSEX);
 
-	wcex.style			= CS_HREDRAW | CS_VREDRAW;
-	wcex.lpfnWndProc	= WndProc;
-	wcex.cbClsExtra		= 0;
-	wcex.cbWndExtra		= 0;
-	wcex.hInstance		= hInstance;
-	wcex.hIcon			= LoadIcon(hInstance, MAKEINTRESOURCE(IDI_UIGENERATOR));
-	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
-	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
-	wcex.lpszMenuName	= MAKEINTRESOURCE(IDC_UIGENERATOR);
-	wcex.lpszClassName	= szWindowClass;
-	wcex.hIconSm		= LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+	wcex.style = CS_HREDRAW | CS_VREDRAW;
+	wcex.lpfnWndProc = WndProc;
+	wcex.cbClsExtra = 0;
+	wcex.cbWndExtra = 0;
+	wcex.hInstance = hInstance;
+	wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_UIGENERATOR));
+	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+	wcex.lpszMenuName = MAKEINTRESOURCE(IDC_UIGENERATOR);
+	wcex.lpszClassName = szWindowClass;
+	wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
 	return RegisterClassEx(&wcex);
 }
@@ -98,24 +101,27 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 //
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
-   HWND hWnd;
+	HWND hWnd;
 
-   hInst = hInstance; // 将实例句柄存储在全局变量中
+	hInst = hInstance; // 将实例句柄存储在全局变量中
 
-   hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, NULL, NULL, hInstance, NULL);
+	hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+		CW_USEDEFAULT, 0, 500, 370, NULL, NULL, hInstance, NULL);
 
-   application.init();
+	hwndbtn = CreateWindow(L"button", L"test", WS_CHILD | WS_VISIBLE,
+		100, 100, 300, 50, hWnd, NULL, hInstance, NULL);
 
-   if (!hWnd)
-   {
-      return FALSE;
-   }
+	application.init();
 
-   ShowWindow(hWnd, nCmdShow);
-   UpdateWindow(hWnd);
+	if (!hWnd)
+	{
+		return FALSE;
+	}
 
-   return TRUE;
+	ShowWindow(hWnd, nCmdShow);
+	UpdateWindow(hWnd);
+
+	return TRUE;
 }
 
 //
@@ -140,9 +146,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	switch (message)
 	{
 	case WM_COMMAND:
-		wmId    = LOWORD(wParam);
+		wmId = LOWORD(wParam);
 		wmEvent = HIWORD(wParam);
 		// 分析菜单选择: 
+		if ((HWND)lParam == hwndbtn){
+			Register reg;
+			try{
+				//reg.addKey(HKEY_CURRENT_USER, L"Chinese", L"as",L"1sad");
+				reg.delKey(HKEY_CURRENT_USER, L"Chinese");
+			}
+			catch (char *e){
+				MessageBoxA(hWnd, e, "error", 0);
+
+			}
+
+			//if (reg.isExist(HKEY_CURRENT_USER, L"Chinese",L"333e"))MessageBox(hWnd, L"存在", L"提示", 0);
+			//else MessageBox(hWnd, L"不存在", L"提示", 0);
+		}
+
 		switch (wmId)
 		{
 		case IDM_ABOUT:
