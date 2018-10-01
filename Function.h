@@ -32,3 +32,22 @@ public:
 
 };
 
+class FileRelation{
+
+public:
+	FileRelation();
+	~FileRelation();
+
+	//例:setRelation(L".txt",L"c:\\windows\\notepad.exe");
+	void setRelation(CString extension,CString filepath);
+	
+	//取消文件关联
+	void cancelRelation(CString extension, CString filepath=TEXT(""));
+
+private:
+
+	Register m_reg;
+
+
+
+};

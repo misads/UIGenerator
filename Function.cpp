@@ -98,3 +98,28 @@ void Register::updateKey(HKEY hkey, CString item, CString name, CString value){
 		throw "not exist";
 	}
 }
+
+
+FileRelation::FileRelation(){
+
+}
+
+FileRelation::~FileRelation(){
+
+}
+
+
+void FileRelation::setRelation(CString extension, CString filepath){
+
+
+
+}
+
+//若filepath为空，删除所有文件关联，否则只删除filepath的文件关联
+void FileRelation::cancelRelation(CString extension, CString filepath){
+
+
+
+}
+
+
