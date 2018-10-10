@@ -108,6 +108,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, 0, 500, 370, NULL, NULL, hInstance, NULL);
 
+
+
 	hwndbtn = CreateWindow(L"button", L"test", WS_CHILD | WS_VISIBLE,
 		100, 100, 300, 50, hWnd, NULL, hInstance, NULL);
 
@@ -151,9 +153,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		// ·ÖÎö²Ëµ¥Ñ¡Ôñ: 
 		if ((HWND)lParam == hwndbtn){
 			Register reg;
+			FileRelation relation;
 			try{
-				//reg.addKey(HKEY_CURRENT_USER, L"Chinese", L"as",L"1sad");
-				reg.delKey(HKEY_CURRENT_USER, L"Chinese");
+				//reg.delKey(HKEY_CURRENT_USER, L"Chinese");
+				//reg.delKey(HKEY_CLASSES_ROOT,"uigenerator");
+				//reg.updateKey(HKEY_CURRENT_USER, L"Chinese", L"111",L"1231");
+				//relation.cancelRelation(L".ugr", L"e:\\a b\\uigenerator.exe");
+				//relation.setRelation(L".ugr",L"e:\\a b\\uigenerator.exe");
+				relation.cancelRelation(".ugr");
+				//reg.addKey(HKEY_CLASSES_ROOT, L".ugr", L"@", L"uigenerator");
+				//reg.addKey(HKEY_CURRENT_USER, L"Chinese", L"@", L"1sad");
+				//reg.addKey(HKEY_CURRENT_USER, L"Chinese");
 			}
 			catch (char *e){
 				MessageBoxA(hWnd, e, "error", 0);
