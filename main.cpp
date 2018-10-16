@@ -108,17 +108,17 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, 0, WINDOW_WIDTH, WINDOW_HEIGHT, NULL, NULL, hInstance, NULL);
 
-<<<<<<< HEAD
+
 	
 
 	//hwndbtn = CreateWindow(L"button", L"test", WS_CHILD | WS_VISIBLE,
 		//100, 100, 300, 50, hWnd, NULL, hInstance, NULL);
-=======
 
 
-	hwndbtn = CreateWindow(L"button", L"test", WS_CHILD | WS_VISIBLE,
-		100, 100, 300, 50, hWnd, NULL, hInstance, NULL);
->>>>>>> 9f860624f596cac82d6adb1f9b4d934ddf4d10c9
+
+	//hwndbtn = CreateWindow(L"button", L"test", WS_CHILD | WS_VISIBLE,
+		//100, 100, 300, 50, hWnd, NULL, hInstance, NULL);
+
 
 
 	if (!hWnd)
