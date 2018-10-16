@@ -1,193 +1,240 @@
 #include "stdafx.h"
 #include "GDI.h"
 
-#ifndef _SERVER_
-
 
 #pragma comment(lib,"Msimg32.lib")
 
 
-#ifndef _D2DRender_
-
 CGDI::CGDI(){
-	m_Hdc=NULL;
-	m_hRenderBuffer=NULL;
+	m_hdc = NULL;
+	m_hRenderBuffer = NULL;
+	m_hBitmap = NULL;
+
+	m_hFont = CreateFont(30, 0, 0, 0, 400, FALSE, FALSE, 0,
+		GB2312_CHARSET, OUT_DEFAULT_PRECIS,
+		CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
+		DEFAULT_PITCH | FF_MODERN, L"微软雅黑");
 }
 
 CGDI::~CGDI(){
-	if (m_Hdc) DeleteObject(m_Hdc);
+	if (m_hdc) DeleteObject(m_hdc);
 	if (m_hRenderBuffer) DeleteObject(m_hRenderBuffer);
+	if (m_hBitmap) DeleteObject(m_hBitmap);
 }
 
 
-bool CGDI::DrawLine(HDC hdc, int _dot1x, int _dot1y, int _dot2x, int _dot2y,
-	int nWidth, DWORD dwColor){
+bool CGDI::DrawLine(HDC hdc, int a_x, int a_y, int b_x, int b_y,
+	int thickness, DWORD color){
 
 	HPEN hPen;
-	hPen = CreatePen(PS_SOLID, nWidth, dwColor);
+	hPen = CreatePen(PS_SOLID, thickness, color);
 	SelectObject(hdc, hPen);
-	MoveToEx(hdc, _dot1x, _dot1y, 0);
-	LineTo(hdc, _dot2x, _dot2y);
+	MoveToEx(hdc, a_x, a_y, 0);
+	LineTo(hdc, b_x, b_y);
 	DeleteObject(hPen);
 	return true;
 }
 
 
-bool CGDI::DrawLineEx(HDC hdc, int _dot1x, int _dot1y, int _dot2x, int _dot2y,
-	ePenStyle nPenStyle, int nWidth, DWORD dwColor){
+bool CGDI::DrawLineEx(HDC hdc, int a_x, int a_y, int b_x, int b_y,
+	LineStyle lineStyle, int thickness, DWORD color){
 
 	HPEN hPen;
-	hPen = CreatePen(nPenStyle, nWidth, dwColor);
+	hPen = CreatePen(lineStyle, thickness, color);
 	SelectObject(hdc, hPen);
-	MoveToEx(hdc, _dot1x, _dot1y, 0);
-	LineTo(hdc, _dot2x, _dot2y);
+	MoveToEx(hdc, a_x, a_y, 0);
+	LineTo(hdc, b_x, b_y);
 	DeleteObject(hPen);
 	return true;
 }
 
-bool CGDI::DrawRectangle(HDC hdc, int _dot1x, int _dot1y, int _dot2x, int _dot2y,
-	int nWidth, DWORD dwColor){
+bool CGDI::DrawRectangle(HDC hdc, int a_x, int a_y, int b_x, int b_y,
+	int thickness, DWORD color){
 
 	HPEN hPen;
-	hPen = CreatePen(PS_SOLID, nWidth, dwColor);
+	hPen = CreatePen(PS_SOLID, thickness, color);
 	SelectObject(hdc, hPen);
 	SelectObject(hdc, GetStockObject(NULL_BRUSH));
-	Rectangle(hdc, _dot1x, _dot1y, _dot2x, _dot2y);
+	Rectangle(hdc, a_x, a_y, b_x, b_y);
 	DeleteObject(hPen);
 	return true;
 }
 
-bool CGDI::DrawRectangleEx(HDC hdc, int _dot1x, int _dot1y, int _dot2x, int _dot2y,
-	ePenStyle nPenStyle, int nWidth, DWORD dwColor){
+bool CGDI::DrawRectangleEx(HDC hdc, int a_x, int a_y, int b_x, int b_y,
+	LineStyle lineStyle, int thickness, DWORD color){
 
 	HPEN hPen;
-	hPen = CreatePen(nPenStyle, nWidth, dwColor);
+	hPen = CreatePen(lineStyle, thickness, color);
 	SelectObject(hdc, hPen);
-	Rectangle(hdc, _dot1x, _dot1y, _dot2x, _dot2y);
+	Rectangle(hdc, a_x, a_y, b_x, b_y);
 	DeleteObject(hPen);
 	return true;
 }
 
-bool CGDI::DrawSolidRectangle(HDC hdc, int _dot1x, int _dot1y, int _dot2x, int _dot2y,
-	DWORD dwColor){
+bool CGDI::DrawSolidRectangle(HDC hdc, int a_x, int a_y, int b_x, int b_y,
+	DWORD color){
 
 	HBRUSH hBrush;
-	hBrush = CreateSolidBrush(dwColor);
+	hBrush = CreateSolidBrush(color);
 	SelectObject(hdc, hBrush);
-	Rectangle(hdc, _dot1x, _dot1y, _dot2x, _dot2y);
+	Rectangle(hdc, a_x, a_y, b_x, b_y);
 	DeleteObject(hBrush);
 	return true;
 }
 
 bool CGDI::DrawSolidRectangle(HDC hdc, Line _line,
-	DWORD dwColor){
+	DWORD color){
 	return DrawSolidRectangle(hdc, _line.a.x, _line.a.y, _line.b.x, _line.b.y);
 }
 
-bool CGDI::DrawSolidRectangleEx(HDC hdc, int _dot1x, int _dot1y, int _dot2x, int _dot2y,
-	DWORD dwColor, int nBorderWidth, DWORD dwBorderColor){
-	DrawRectangle(hdc, _dot1x, _dot1y, _dot2x, _dot2y, nBorderWidth, dwBorderColor);
-	DrawSolidRectangle(hdc, _dot1x, _dot1y, _dot2x, _dot2y, dwColor);
+bool CGDI::DrawSolidRectangleEx(HDC hdc, int a_x, int a_y, int b_x, int b_y,
+	DWORD color, int nBorderWidth, DWORD dwBorderColor){
+	DrawRectangle(hdc, a_x, a_y, b_x, b_y, nBorderWidth, dwBorderColor);
+	DrawSolidRectangle(hdc, a_x, a_y, b_x, b_y, color);
 	return true;
 }
 
-bool CGDI::DrawTextB(HDC hdc, int _dot1x, int _dot1y, int _dot2x, int _dot2y,
-	LPCTSTR lpString, bool bCenter){
+bool CGDI::DrawTextB(HDC hdc, int a_x, int a_y, int b_x, int b_y,
+	LPCTSTR text, bool isCenter, bool isTransparent){
 	RECT rt;
 	UINT uFormat = DT_SINGLELINE;
-	rt.left = _dot1x;
-	rt.top = _dot1y;
-	rt.right = _dot2x;
-	rt.bottom = _dot2y;
-	if (bCenter)
+	rt.left = a_x;
+	rt.top = a_y;
+	rt.right = b_x;
+	rt.bottom = b_y;
+	if (isCenter)
 		uFormat |= DT_CENTER;
-	//SetBkMode(hdc, TRANSPARENT);
-	HDC font1;
-	font1 = (HDC)CreateFont(30, 0, 0, 0, 400, FALSE, FALSE, 0,
-		GB2312_CHARSET, OUT_DEFAULT_PRECIS,
-		CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
-		DEFAULT_PITCH | FF_MODERN, L"微软雅黑");
+	if (isTransparent)SetBkMode(hdc, TRANSPARENT);
 
-	SelectObject(hdc,font1);
 
-	DrawText(hdc, lpString, -1, &rt, uFormat);
+	SelectObject(hdc, m_hFont);
 
+	DrawText(hdc, text, -1, &rt, uFormat);
+
+	//SAFE_DELETE(font1);
 	return true;
 }
 
 bool CGDI::DrawTextB(HDC hdc, Point _p1, Point _p2,
-	LPCTSTR lpString, bool bCenter){
-	return DrawTextB(hdc, _p1.x, _p1.y, _p2.x, _p2.y, lpString, bCenter);
+	LPCTSTR text, bool isCenter, bool isTransparent){
+	return DrawTextB(hdc, _p1.x, _p1.y, _p2.x, _p2.y, text, isCenter, isTransparent);
 }
 
 
-HBITMAP CGDI::LoadBmpFile(LPCTSTR pFileName){
-	//加在bmp文件
-	return (HBITMAP)LoadImage(NULL, pFileName, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-}
 
 bool CGDI::DrawBmp(HDC hdc, LPCTSTR pFileName, int _x, int _y, int _width, int _height,
-	int nSrcX, int nSrcY){
+	int src_x, int src_y){
 
 	HDC Hdc;
 	HBITMAP hBitmap;
 	Hdc = CreateCompatibleDC(hdc);
-	hBitmap = LoadBmpFile(pFileName);
+	hBitmap = LoadImageFile(pFileName);
 	SelectObject(Hdc, hBitmap);
-	BitBlt(hdc, _x, _y, _width, _height, Hdc, nSrcX, nSrcY, SRCCOPY);
+	BitBlt(hdc, _x, _y, _width, _height, Hdc, src_x, src_y, SRCCOPY);
 	DeleteObject(hBitmap);
 	DeleteObject(Hdc);
 	return true;
 }
 
-bool CGDI::DrawTransparentBmp(HDC hdc, LPCTSTR pFileName, int _x, int _y, int _width, int _height,
-	int nSrcX, int nSrcY, DWORD bkColor){
+bool CGDI::DrawBmp(HDC hdc, HBITMAP hBitmap, int _x, int _y, int _width, int _height,
+	int src_x, int src_y){
+
+	HDC Hdc;
+	Hdc = CreateCompatibleDC(hdc);
+	SelectObject(Hdc, hBitmap);
+	BitBlt(hdc, _x, _y, _width, _height, Hdc, src_x, src_y, SRCCOPY);
+	//DeleteObject(hBitmap);
+	DeleteObject(Hdc);
+	return true;
+
+
+}
+
+bool CGDI::DrawBmp(HDC hdc, HINSTANCE hInst, int resId, int _x, int _y, int _width, int _height,
+	int src_x, int src_y){
+	HBITMAP hBitmap = LoadImageRes(hInst, resId);
+	DrawBmp(hdc, hBitmap, _x, _y, _width, _height,
+		src_x, src_y);
+	DeleteObject(hBitmap);
+
+	return true;
+}
+
+bool CGDI::DrawTransparentBmp(HDC hdc, LPCTSTR filePath, int _x, int _y, int _width, int _height,
+	int src_x, int src_y, DWORD transparentColor){
 
 	HDC Hdc;
 	HBITMAP hBitmap;
 	Hdc = CreateCompatibleDC(hdc);
-	hBitmap = LoadBmpFile(pFileName);
+	hBitmap = LoadImageFile(filePath);
 	SelectObject(Hdc, hBitmap);
 	//BitBlt(hdc,_x,_y,_width,_height,Hdc,nSrcX,nSrcY,SRCCOPY);
-	TransparentBlt(hdc, _x, _y, _width, _height, Hdc, nSrcX, nSrcY, _width, _height, bkColor);
+	TransparentBlt(hdc, _x, _y, _width, _height, Hdc, src_x, src_y, _width, _height, transparentColor);
 	DeleteObject(hBitmap);
 	DeleteObject(Hdc);
 	return true;
 }
 
 bool CGDI::DrawTransparentBmp(HDC hdc, HBITMAP hBitmap, int _x, int _y, int _width, int _height,
-	int nSrcX, int nSrcY, DWORD bkColor){
+	int src_x, int src_y, DWORD transparentColor){
 
 	HDC Hdc;
 	Hdc = CreateCompatibleDC(hdc);
 	SelectObject(Hdc, hBitmap);
 	//BitBlt(hdc,_x,_y,_width,_height,Hdc,nSrcX,nSrcY,SRCCOPY);
-	TransparentBlt(hdc, _x, _y, _width, _height, Hdc, nSrcX, nSrcY, _width, _height, bkColor);
+	TransparentBlt(hdc, _x, _y, _width, _height, Hdc, src_x, src_y, _width, _height, transparentColor);
 	//DeleteObject(hBitmap);
 	DeleteObject(Hdc);
 	return true;
 }
 
+bool CGDI::DrawTransparentBmp(HDC hdc, HINSTANCE hInst, int resId, int _x, int _y, int _width, int _height,
+	int src_x, int src_y, DWORD transparentColor){
+	HBITMAP hBitmap = LoadImageRes(hInst, resId);
+	DrawTransparentBmp(hdc, hBitmap, _x, _y, _width, _height,
+		src_x, src_y, transparentColor);
+	DeleteObject(hBitmap);
+	return true;
+
+}
 bool CGDI::CreateRenderBuffer(HDC hdc, int _width, int _height){
 	m_pResolution = Point(_width, _height);
-	if (m_Hdc) DeleteObject(m_Hdc);
+	if (m_hdc) DeleteObject(m_hdc);
 	if (m_hRenderBuffer) DeleteObject(m_hRenderBuffer);
-	m_Hdc = CreateCompatibleDC(NULL);
+	m_hdc = CreateCompatibleDC(NULL);
 	m_hRenderBuffer = CreateCompatibleBitmap(hdc, _width, _height);
-	SelectObject(m_Hdc, m_hRenderBuffer);
+	SelectObject(m_hdc, m_hRenderBuffer);
 	return true;
 }
 
 HDC CGDI::GetTempHdc(){
-	return m_Hdc;
+	return m_hdc;
 }
 
-bool	CGDI::NotifyChange(HDC hdc){
-	return (BitBlt(hdc, 0, 0, m_pResolution.x, m_pResolution.y, m_Hdc, 0, 0, SRCCOPY)!=0);
+bool	CGDI::RenderToScreen(HDC hdc){
+	return (BitBlt(hdc, 0, 0, m_pResolution.x, m_pResolution.y, m_hdc, 0, 0, SRCCOPY) != 0);
 }
 
-#else
 
-#endif
+HBITMAP CGDI::LoadImageFile(LPCTSTR filePath){
+	//加载bmp文件
+	SAFE_DELETE(m_hBitmap);
+	m_hBitmap = (HBITMAP)LoadImage(NULL, filePath, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+	return m_hBitmap;
+}
 
-#endif
+HBITMAP	CGDI::LoadImageRes(HINSTANCE hInst, int id){
+	SAFE_DELETE(m_hBitmap);
+	m_hBitmap = LoadBitmap(hInst, MAKEINTRESOURCE(id));
+	return m_hBitmap;
+}
+
+void	CGDI::SetFont(LPCTSTR fontName, int height, int width, int weight,
+	DWORD italic, DWORD underline){
+
+	SAFE_DELETE(m_hFont);
+	m_hFont = CreateFont(height, width, 0, 0, weight, italic, underline, 0,
+		GB2312_CHARSET, OUT_DEFAULT_PRECIS,
+		CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
+		DEFAULT_PITCH | FF_MODERN, fontName);
+}

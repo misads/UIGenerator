@@ -5,7 +5,7 @@
 #include "UIGenerator.h"
 #include "Application.h"
 #include "Function.h"
-
+#include "GDI.h"
 #define MAX_LOADSTRING 100
 
 // 全局变量: 
@@ -106,20 +106,26 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	hInst = hInstance; // 将实例句柄存储在全局变量中
 
 	hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT, 0, 500, 370, NULL, NULL, hInstance, NULL);
+		CW_USEDEFAULT, 0, WINDOW_WIDTH, WINDOW_HEIGHT, NULL, NULL, hInstance, NULL);
 
-	hwndbtn = CreateWindow(L"button", L"test", WS_CHILD | WS_VISIBLE,
-		100, 100, 300, 50, hWnd, NULL, hInstance, NULL);
+	
 
-	application.init();
+	//hwndbtn = CreateWindow(L"button", L"test", WS_CHILD | WS_VISIBLE,
+		//100, 100, 300, 50, hWnd, NULL, hInstance, NULL);
+
 
 	if (!hWnd)
 	{
 		return FALSE;
 	}
 
+	application.init();
+
+
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
+
+
 
 	return TRUE;
 }
@@ -136,6 +142,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	CGDI GDI;
 	int wmId, wmEvent;
 	PAINTSTRUCT ps;
 	HDC hdc;
@@ -149,7 +156,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		wmId = LOWORD(wParam);
 		wmEvent = HIWORD(wParam);
 		// 分析菜单选择: 
-		if ((HWND)lParam == hwndbtn){
+		/*if ((HWND)lParam == hwndbtn){
 			Register reg;
 			try{
 				//reg.addKey(HKEY_CURRENT_USER, L"Chinese", L"as",L"1sad");
@@ -162,7 +169,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			//if (reg.isExist(HKEY_CURRENT_USER, L"Chinese",L"333e"))MessageBox(hWnd, L"存在", L"提示", 0);
 			//else MessageBox(hWnd, L"不存在", L"提示", 0);
-		}
+		}*/
 
 		switch (wmId)
 		{
@@ -179,6 +186,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 		// TODO:  在此添加任意绘图代码...
+
 		EndPaint(hWnd, &ps);
 		break;
 	case WM_DESTROY:
